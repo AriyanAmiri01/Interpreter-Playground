@@ -1,4 +1,5 @@
 // InterpreterPlayground.cpp
+#include "MyFileOpener.h"
 #include "MyException.h"
 #include <exception>
 #include <stdexcept>
@@ -7,7 +8,11 @@
 int main(){
 	// Error handling system
 	try{
-		EXCEPT_INT("Here is the test exception");
+		// Testing to see if new commit can open a file
+		std::string fileDir = "C:/Users/ariya/source/repos/Interpreter Playground/Interpreter Playground/FAIL_DivisionByZero.txt";
+		MyFileOpener myFileOpener(fileDir);
+		std::cout << "The content of the selected file is" << std::endl
+			<<"[" << myFileOpener.getFile() << "]" << std::endl;
 	}
 	catch(const std::exception& e){
 		std::cerr << e.what() << std::endl;

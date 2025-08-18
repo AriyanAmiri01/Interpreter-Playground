@@ -143,9 +143,11 @@
   <ItemGroup>
     <ClCompile Include="InterpreterPlayground.cpp" />
     <ClCompile Include="MyException.cpp" />
+    <ClCompile Include="MyFileOpener.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MyException.h" />
+    <ClInclude Include="MyFileOpener.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
