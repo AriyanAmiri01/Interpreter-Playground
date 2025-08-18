@@ -1,4 +1,5 @@
 // InterpreterPlayground.cpp
+#include "MyException.h"
 #include <exception>
 #include <stdexcept>
 #include <iostream>
@@ -6,10 +7,10 @@
 int main(){
 	// Error handling system
 	try{
-
+		EXCEPT_INT("Here is the test exception");
 	}
 	catch(const std::exception& e){
-		std::cerr << "Exception:" << e.what() << std::endl;
+		std::cerr << e.what() << std::endl;
 		return -1;
 	}
 	catch(...){
