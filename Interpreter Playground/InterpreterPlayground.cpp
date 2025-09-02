@@ -1,6 +1,7 @@
 // InterpreterPlayground.cpp
 #include "MyFileOpener.h"
 #include "MyException.h"
+#include "MyLexor.h"
 #include <exception>
 #include <stdexcept>
 #include <iostream>
@@ -8,11 +9,17 @@
 int main(){
 	// Error handling system
 	try{
+
 		// Testing to see if new commit can open a file
-		std::string fileDir = "C:/Users/ariya/source/repos/Interpreter Playground/Interpreter Playground/FAIL_DivisionByZero.txt";
+		std::string fileDir = "C:/Users/ariya/source/repos/Interpreter Playground/Interpreter Playground/VettoriTest/FAIL_DivisionByZero.txt";
 		MyFileOpener myFileOpener(fileDir);
-		std::cout << "The content of the selected file is" << std::endl
-			<<"[" << myFileOpener.getFile() << "]" << std::endl;
+
+		// Lexing the file
+		MyLexor myLexor(myFileOpener.getFile());
+		myLexor.Tokenize();
+
+		// Testing if the tokenization works correctly
+		myLexor.testTokens();
 	}
 	catch(const std::exception& e){
 		std::cerr << e.what() << std::endl;
