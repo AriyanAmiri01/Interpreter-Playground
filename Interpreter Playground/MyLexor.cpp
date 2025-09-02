@@ -346,6 +346,11 @@ std::vector<Token> MyLexor::getTokens()
 /// TEST STUFFS
 void MyLexor::testTokens()
 {
+	// Defining a basic function for seeing the result of the lexor
+	std::cout
+		<< std::endl
+		<< "___________________________________"
+		<< "The result of the testTokens:" << std::endl;
 	int i = 0;
 	for(auto t : tokens){
 		if(t.getTokenID() == TOKEN_NEWLINE){
@@ -357,5 +362,7 @@ void MyLexor::testTokens()
 			i++;
 		}
 	}
-	std::cout << std::endl;
+	std::cout 
+		<< "___________________________________" 
+		<< std::endl;
 }

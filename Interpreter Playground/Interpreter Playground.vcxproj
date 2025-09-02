@@ -148,17 +148,27 @@
     <ClCompile Include="InterpreterPlayground.cpp" />
     <ClCompile Include="MyEnumeration.h" />
     <ClCompile Include="MyException.cpp" />
+    <ClCompile Include="MyExpression.cpp" />
+    <ClCompile Include="MyExpressionFactory.cpp" />
     <ClCompile Include="MyFileOpener.cpp" />
+    <ClCompile Include="MyIdentifier.cpp" />
     <ClCompile Include="MyLexor.cpp" />
+    <ClCompile Include="MyParser.cpp" />
+    <ClCompile Include="MyStatement.cpp" />
+    <ClCompile Include="MyStatementFactory.cpp" />
     <ClCompile Include="Token.cpp" />
-    <ClCompile Include="Tokenizer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MyException.h" />
+    <ClInclude Include="MyExpression.h" />
+    <ClInclude Include="MyExpressionFactory.h" />
     <ClInclude Include="MyFileOpener.h" />
+    <ClInclude Include="MyIdentifier.h" />
     <ClInclude Include="MyLexor.h" />
+    <ClInclude Include="MyParser.h" />
+    <ClInclude Include="MyStatement.h" />
+    <ClInclude Include="MyStatementFactory.h" />
     <ClInclude Include="Token.h" />
-    <ClInclude Include="Tokenizer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

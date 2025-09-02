@@ -2,6 +2,7 @@
 #include "MyFileOpener.h"
 #include "MyException.h"
 #include "MyLexor.h"
+#include "MyParser.h"
 #include <exception>
 #include <stdexcept>
 #include <iostream>
@@ -17,9 +18,12 @@ int main(){
 		// Lexing the file
 		MyLexor myLexor(myFileOpener.getFile());
 		myLexor.Tokenize();
-
-		// Testing if the tokenization works correctly
 		myLexor.testTokens();
+
+		// Parsing the file
+		MyParser myParser(0, myLexor.getTokens());
+		myParser.ASTCreator();
+		myParser.testAST();
 	}
 	catch(const std::exception& e){
 		std::cerr << e.what() << std::endl;
