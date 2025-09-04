@@ -4,6 +4,7 @@
 
 /////////////////////////////////////////////////////////////////
 ///	FILE OPENER IMPLEMENTATION STUFFS
+
 MyFileOpener::MyFileOpener(const std::string& fileDir)
 {
 	// Opening the file
@@ -24,17 +25,25 @@ MyFileOpener::MyFileOpener(const std::string& fileDir)
 	// Writing the file
 	file = oss.str();
 }
+
 MyFileOpener::MyFileOpener(const MyFileOpener& xFile) noexcept
 	:
 	file(xFile.file)
 {
 }
+
 MyFileOpener::MyFileOpener(MyFileOpener&& xFile) noexcept
 	:
 	file(std::move(xFile.file))
 {
 }
+
 std::string MyFileOpener::getFile() const noexcept
+{
+	return file;
+}
+
+std::string& MyFileOpener::getFileRef() noexcept
 {
 	return file;
 }

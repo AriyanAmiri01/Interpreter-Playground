@@ -1,7 +1,7 @@
 // Expression.cpp
 #pragma once
 #include "MyExpression.h"
-
+#include "MySemanticAnalyzer.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 /// VALUE EXPRESSION STUFFS
@@ -540,4 +540,55 @@ void exprVisitor::visit(factorExpression& c)
 void exprVisitor::visit(nullExpr& c)
 {
 	std::cout << "[nullExpr]";
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// ACCEPT EXECUTE VISITOR 
+valueExpression factorExpression::accept(MySemanticAnalyzer& v)
+{
+	return v.execute(*this);
+}
+valueExpression locExpression::accept(MySemanticAnalyzer& v)
+{
+	return v.execute(*this);
+}
+valueExpression valueExpression::accept(MySemanticAnalyzer& v)
+{
+	return v.execute(*this);
+}
+valueExpression orExpression::accept(MySemanticAnalyzer& v)
+{
+	return v.execute(*this);
+}
+valueExpression andExpression::accept(MySemanticAnalyzer& v)
+{
+	return v.execute(*this);
+}
+valueExpression equalityExpression::accept(MySemanticAnalyzer& v)
+{
+	return v.execute(*this);
+}
+valueExpression relExpression::accept(MySemanticAnalyzer& v)
+{
+	return v.execute(*this);
+}
+valueExpression numExpression::accept(MySemanticAnalyzer& v)
+{
+	return v.execute(*this);
+}
+valueExpression termExpression::accept(MySemanticAnalyzer& v)
+{
+	return v.execute(*this);
+}
+valueExpression unaryExpression::accept(MySemanticAnalyzer& v)
+{
+	return v.execute(*this);
+}
+valueExpression nullExpr::accept(MySemanticAnalyzer& v)
+{
+	return v.execute(*this);
+}
+valueExpression expr::accept(MySemanticAnalyzer& v)
+{
+	return v.execute(*this);
 }

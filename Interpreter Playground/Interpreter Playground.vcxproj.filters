@@ -51,6 +51,9 @@
     <ClCompile Include="MyIdentifier.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="MySemanticAnalyzer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MyException.h">
@@ -60,9 +63,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Token.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Tokenizer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="MyLexor.h">
@@ -84,6 +84,9 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="MyIdentifier.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MySemanticAnalyzer.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

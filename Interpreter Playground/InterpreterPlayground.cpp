@@ -3,6 +3,7 @@
 #include "MyException.h"
 #include "MyLexor.h"
 #include "MyParser.h"
+#include "MySemanticAnalyzer.h"
 #include <exception>
 #include <stdexcept>
 #include <iostream>
@@ -12,7 +13,7 @@ int main(){
 	try{
 
 		// Testing to see if new commit can open a file
-		std::string fileDir = "C:/Users/ariya/source/repos/Interpreter Playground/Interpreter Playground/VettoriTest/FAIL_DivisionByZero.txt";
+		std::string fileDir = "C:/Users/ariya/source/repos/Interpreter Playground/Interpreter Playground/VettoriTest/PASS_Factorial.txt";
 		MyFileOpener myFileOpener(fileDir);
 
 		// Lexing the file
@@ -24,6 +25,10 @@ int main(){
 		MyParser myParser(0, myLexor.getTokens());
 		myParser.ASTCreator();
 		myParser.testAST();
+
+		// Anylizing the AST
+		MySemanticAnalyzer mySemanticalAnalyzer(std::move(myParser.AST));
+		mySemanticalAnalyzer.interpret();
 	}
 	catch(const std::exception& e){
 		std::cerr << e.what() << std::endl;

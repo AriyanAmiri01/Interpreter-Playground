@@ -1,5 +1,5 @@
-#pragma once
 // MyFileOpener.h
+#pragma once
 #include <fstream>
 #include <sstream>
 #include <string>
@@ -17,6 +17,7 @@ public:
 	MyFileOpener& operator=(MyFileOpener&&) = delete;
 public:
 	std::string getFile() const noexcept;
+	std::string& getFileRef() noexcept;
 private:
 	std::string file;
 };
