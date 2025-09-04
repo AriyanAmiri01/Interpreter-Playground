@@ -11,6 +11,7 @@
 
 /////////////////////////////////////////////////////////////////
 ///	PRINT TEST EXPRESSION VISITOR STUFFS
+class MySemanticAnalyzer;
 class valueExpression;
 class locExpression;
 class orExpression;
@@ -46,6 +47,7 @@ class expr
 public:
 	expr(int xType, int xValType);
 public:
+	virtual valueExpression accept(MySemanticAnalyzer& v) = 0;
 	virtual void accept(exprVisitor& v) = 0;
 	virtual std::unique_ptr<expr> clone() const = 0;
 public:
@@ -58,6 +60,7 @@ class valueExpression :public expr
 public:
 	valueExpression();
 public:
+	valueExpression accept(MySemanticAnalyzer& v) override;
 	void accept(exprVisitor& v)override;
 	std::unique_ptr<expr> clone() const override;
 public:
@@ -80,6 +83,7 @@ class locExpression :public expr
 public:
 	locExpression(std::unique_ptr<identifier> xId, std::unique_ptr<expr> xExpression);
 public:
+	valueExpression accept(MySemanticAnalyzer& v) override;
 	void accept(exprVisitor& v)override;
 	std::unique_ptr<expr> clone() const override;
 public:
@@ -92,6 +96,7 @@ class orExpression :public expr
 public:
 	orExpression(int xType, std::unique_ptr<expr> xLeft, std::unique_ptr<expr> xRight);
 public:
+	valueExpression accept(MySemanticAnalyzer& v) override;
 	std::unique_ptr<expr> clone() const override;
 	void accept(exprVisitor& v)override;
 public:
@@ -104,6 +109,7 @@ class andExpression :public expr
 public:
 	andExpression(int xType, std::unique_ptr<expr> xLeft, std::unique_ptr<expr> xRight);
 public:
+	valueExpression accept(MySemanticAnalyzer& v) override;
 	std::unique_ptr<expr> clone() const override;
 	void accept(exprVisitor& v)override;
 public:
@@ -116,6 +122,7 @@ class equalityExpression :public expr
 public:
 	equalityExpression(int xType, std::unique_ptr<expr> xLeft, std::unique_ptr<expr> xRight);
 public:
+	valueExpression accept(MySemanticAnalyzer& v) override;
 	std::unique_ptr<expr> clone() const override;
 	void accept(exprVisitor& v)override;
 public:
@@ -128,6 +135,7 @@ class relExpression :public expr
 public:
 	relExpression(int xType, std::unique_ptr<expr> xLValue, std::unique_ptr<expr> xRValue);
 public:
+	valueExpression accept(MySemanticAnalyzer& v) override;
 	std::unique_ptr<expr> clone() const override;
 	void accept(exprVisitor& v)override;
 public:
@@ -140,6 +148,7 @@ class numExpression :public expr
 public:
 	numExpression(int xType, std::unique_ptr<expr> xLeft, std::unique_ptr<expr> xRight);
 public:
+	valueExpression accept(MySemanticAnalyzer& v) override;
 	std::unique_ptr<expr> clone() const override;
 	void accept(exprVisitor& v)override;
 public:
@@ -152,6 +161,7 @@ class termExpression : public expr
 public:
 	termExpression(int xType, std::unique_ptr <expr> xLeft, std::unique_ptr<expr> xRight);
 public:
+	valueExpression accept(MySemanticAnalyzer& v) override;
 	std::unique_ptr<expr> clone() const override;
 	void accept(exprVisitor& v)override;
 public:
@@ -162,6 +172,7 @@ class unaryExpression : public expr
 {
 	using expr::expr;
 public:
+	valueExpression accept(MySemanticAnalyzer& v) override;
 	unaryExpression(int xType, std::unique_ptr<expr> xRight);
 	std::unique_ptr<expr> clone() const override;
 	void accept(exprVisitor& v)override;
@@ -172,6 +183,7 @@ class factorExpression :public expr
 	using expr::expr;
 public:
 	factorExpression(int xType, std::unique_ptr<expr> xValue);
+	valueExpression accept(MySemanticAnalyzer& v) override;
 	std::unique_ptr<expr> clone() const override;
 	void accept(exprVisitor& v)override;
 public:
@@ -183,6 +195,7 @@ class nullExpr :public expr
 public:
 	nullExpr(int xType);
 	void accept(exprVisitor& v)override;
+	valueExpression accept(MySemanticAnalyzer& v) override;
 public:
 	std::unique_ptr<expr> clone() const override;
 };

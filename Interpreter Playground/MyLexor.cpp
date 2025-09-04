@@ -11,26 +11,34 @@ MyLexor::MyLexor(std::string xFile)
 	oss << xFile;
 	S.push(0);
 }
+
 void  MyLexor::Tokenize(){
+	// Just extra cheking of the stack just for the debug version
+	#ifndef NDEBUG
 	if(S.empty()){
-		S.push(0);
+		EXCEPT_INT("The laxer has failed to initialize its stack!");
 	}
+	#endif
+
 	// Looping through each line
 	while(std::getline(oss, line)){
-
 		// Extracting Indentation
 		int lineSize = static_cast<int>(line.size());
-		int i = 0;
 
 		// Ignoring empty lines
 		if(line.empty()) {
 			continue;
 		}
+
+		// Looping through each character until we see a char and add indent
+		int i = 0;
 		bool continueTrigger = false;
 		for(i; i < lineSize; i++) {
+			// checking the character
 			if(!std::isspace(line.at(i))) {
 				break;
 			}
+			// a new empty line so we exit out of loop a gen dedent
 			if(i + 1 >= lineSize){
 				continueTrigger = true;
 			}
@@ -41,13 +49,13 @@ void  MyLexor::Tokenize(){
 		// Comparing this line indentation with the prev stack indentation
 		if(i > S.top()){
 			S.push(i);
-			indentTok t("Indent");
+			TokenIndent t("Indent");
 			tokens.push_back(t);
 		}
 		else if(i < S.top()){
 			while(!S.empty() && i < S.top()){
 				S.pop();
-				dedentTok t("Dedent");
+				TokenDedent t("Dedent");
 				tokens.push_back(t);
 			}
 			if(S.empty() || i != S.top()) {
@@ -74,11 +82,11 @@ void  MyLexor::Tokenize(){
 
 				}
 				if(keywordTrees::checkExistance(tempToken)){
-					keywordTok t(tempToken);
+					TokenKeyword t(tempToken);
 					tokens.push_back(t);
 				}
 				else{
-					identifierTok tempIdentifier(tempToken);
+					TokenIdentifier tempIdentifier(tempToken);
 					tokens.push_back(tempIdentifier);
 				}
 			}
@@ -94,7 +102,7 @@ void  MyLexor::Tokenize(){
 					i++;
 
 				}
-				numericalTok tempNumTok(tempToken);
+				TokenNumerical tempNumTok(tempToken);
 				tokens.push_back(tempNumTok);
 
 				if(i < lineSize && std::isalpha(line.at(i))) {
@@ -166,28 +174,28 @@ void  MyLexor::Tokenize(){
 					}
 				case('('):
 					{
-						delimiterTok Tok(std::string(1, '('));
+						TokenDelimiter Tok(std::string(1, '('));
 						tokens.push_back(Tok);
 						i++;
 						break;
 					}
 				case(')'):
 					{
-						delimiterTok Tok(std::string(1, ')'));
+						TokenDelimiter Tok(std::string(1, ')'));
 						tokens.push_back(Tok);
 						i++;
 						break;
 					}
 				case('{'):
 					{
-						delimiterTok Tok(std::string(1, '{'));
+						TokenDelimiter Tok(std::string(1, '{'));
 						tokens.push_back(Tok);
 						i++;
 						break;
 					}
 				case('}'):
 					{
-						delimiterTok Tok(std::string(1, '}'));
+						TokenDelimiter Tok(std::string(1, '}'));
 						tokens.push_back(Tok);
 						i++;
 						break;
@@ -197,13 +205,13 @@ void  MyLexor::Tokenize(){
 						i++;
 						if(i < lineSize && line.at(i) == '<'){
 
-							operatorTok t(std::string(1, '='));
+							TokenOperator t(std::string(1, '='));
 							tokens.push_back(t);
 							i++;
 
 						}
 						else{
-							operatorTok t(std::string(1, '<'));
+							TokenOperator t(std::string(1, '<'));
 							tokens.push_back(t);
 						}
 						break;
@@ -212,12 +220,12 @@ void  MyLexor::Tokenize(){
 					{
 						i++;
 						if(i < lineSize && line.at(i) == '>'){
-							operatorTok t(std::string(1, '='));
+							TokenOperator t(std::string(1, '='));
 							tokens.push_back(t);
 							i++;
 						}
 						else{
-							operatorTok t(std::string(1, '>'));
+							TokenOperator t(std::string(1, '>'));
 							tokens.push_back(t);
 						}
 						break;
@@ -226,33 +234,33 @@ void  MyLexor::Tokenize(){
 					{
 						i++;
 						if(i < lineSize && line.at(i) == '='){
-							operatorTok t("==");
+							TokenOperator t("==");
 							tokens.push_back(t);
 							i++;
 						}
 						else{
-							operatorTok t(std::string(1, '='));
+							TokenOperator t(std::string(1, '='));
 							tokens.push_back(t);
 						}
 						break;
 					}
 				case('%'):
 					{
-						operatorTok Tok(std::string(1, '%'));
+						TokenOperator Tok(std::string(1, '%'));
 						tokens.push_back(Tok);
 						i++;
 						break;
 					}
 				case('+'):
 					{
-						operatorTok Tok(std::string(1, '+'));
+						TokenOperator Tok(std::string(1, '+'));
 						tokens.push_back(Tok);
 						i++;
 						break;
 					}
 				case('-'):
 					{
-						operatorTok Tok(std::string(1, '-'));
+						TokenOperator Tok(std::string(1, '-'));
 						tokens.push_back(Tok);
 						i++;
 						break;
@@ -261,19 +269,19 @@ void  MyLexor::Tokenize(){
 					{
 						i++;
 						if(i < lineSize && line.at(i) == '*'){
-							operatorTok t("**");
+							TokenOperator t("**");
 							tokens.push_back(t);
 							i++;
 						}
 						else{
-							operatorTok Tok(std::string(1, '*'));
+							TokenOperator Tok(std::string(1, '*'));
 							tokens.push_back(Tok);
 						}
 						break;
 					}
 				case('^'):
 					{
-						operatorTok t("^");
+						TokenOperator t("^");
 						tokens.push_back(t);
 						i++;
 						break;
@@ -282,12 +290,12 @@ void  MyLexor::Tokenize(){
 					{
 						i++;
 						if(i < lineSize && line.at(i) == '/'){
-							operatorTok t("//");
+							TokenOperator t("//");
 							tokens.push_back(t);
 							i++;
 						}
 						else{
-							operatorTok Tok(std::string(1, '/'));
+							TokenOperator Tok(std::string(1, '/'));
 							tokens.push_back(Tok);
 						}
 						break;
@@ -296,12 +304,12 @@ void  MyLexor::Tokenize(){
 					{
 						i++;
 						if(line.at(i) == '='){
-							operatorTok t("!=");
+							TokenOperator t("!=");
 							tokens.push_back(t);
 							i++;
 						}
 						else{
-							operatorTok Tok(std::string(1, '!'));
+							TokenOperator Tok(std::string(1, '!'));
 							tokens.push_back(Tok);
 						}
 						break;
@@ -322,14 +330,14 @@ void  MyLexor::Tokenize(){
 			}
 		}
 
-		newLineTok t("NewLine");
+		TokenNewline t("NewLine");
 		tokens.push_back(t);
 	}
 	while(S.size() > 1) { // We assume base indentation is 0 at bottom of stack
 		S.pop();
-		tokens.push_back(dedentTok("Dedent"));
+		tokens.push_back(TokenDedent("Dedent"));
 	}
-	endOfFileTok t("EndOfFileMarker");
+	TokenEOF t("EndOfFileMarker");
 	tokens.push_back(t);
 }
 

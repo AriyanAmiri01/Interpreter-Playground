@@ -17,6 +17,7 @@ public:
 	MyFileOpener& operator=(MyFileOpener&&) = delete;
 public:
 	std::string getFile() const noexcept;
+	std::string& getFileRef() noexcept;
 private:
 	std::string file;
 };

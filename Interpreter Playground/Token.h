@@ -8,6 +8,7 @@
 #include <map>
 
 
+
 ///////////////////////////////////////////////////////////////////
 /// CONCRETE TOKEN
 class Token
@@ -15,95 +16,95 @@ class Token
 public:
 	Token(std::string xTokenString);
 public:
-	int getTokenID() const;
+	TOKENID getTokenID() const;
 	std::string getTokenString() const;
 protected:
-	int tokenID;
+	TOKENID tokenID;
 	std::string tokenString;
 };
 
 
 ///////////////////////////////////////////////////////////////////
 /// GENERAL TOKENS
-class unknownTok :public Token
+class TokenUnknown :public Token
 {
 	using Token::Token;
 public:
-	unknownTok(std::string xTokenString);
+	TokenUnknown(std::string xTokenString);
 };
 
 
 ///////////////////////////////////////////////////////////////////
 /// STRUCTURAL TOKENS
-class newLineTok :public Token
+class TokenNewline :public Token
 {
 	using Token::Token;
 public:
-	newLineTok(std::string xTokenString);
+	TokenNewline(std::string xTokenString);
 };
-class dedentTok :public Token
+class TokenDedent :public Token
 {
 	using Token::Token;
 public:
-	dedentTok(std::string xTokenString);
+	TokenDedent(std::string xTokenString);
 };
-class indentTok :public Token
+class TokenIndent :public Token
 {
 	using Token::Token;
 public:
-	indentTok(std::string xTokenString);
+	TokenIndent(std::string xTokenString);
 };
-class endOfFileTok :public Token
+class TokenEOF :public Token
 {
 	using Token::Token;
 public:
-	endOfFileTok(std::string xTokenString);
+	TokenEOF(std::string xTokenString);
 };
 
 
 //////////////////////////////////////////////////////////////////
 ///	ALPHABETICAL TOKENS
-class identifierTok :public Token
+class TokenIdentifier :public Token
 {
 	using Token::Token;
 public:
-	identifierTok(std::string xTokenString);
+	TokenIdentifier(std::string xTokenString);
 };
-class keywordTok :public Token
+class TokenKeyword :public Token
 {
 	using Token::Token;
 public:
-	keywordTok(std::string xTokenString);
+	TokenKeyword(std::string xTokenString);
 };
 
 
 //////////////////////////////////////////////////////////////////
 /// NUMERICAL TOKENS
-class numericalTok :public Token
+class TokenNumerical :public Token
 {
 	using Token::Token;
 public:
-	numericalTok(std::string xTokenString);
+	TokenNumerical(std::string xTokenString);
 };
 
 
 //////////////////////////////////////////////////////////////////
 /// OPERATOR TOKENS
-class operatorTok :public Token
+class TokenOperator :public Token
 {
 	using Token::Token;
 public:
-	operatorTok(std::string xTokenString);
+	TokenOperator(std::string xTokenString);
 };
 
 
 /////////////////////////////////////////////////////////////////
 /// DELIMITER TOKENS
-class delimiterTok :public Token
+class TokenDelimiter :public Token
 {
 	using Token::Token;
 public:
-	delimiterTok(std::string xTokenString);
+	TokenDelimiter(std::string xTokenString);
 };
 
 
@@ -140,8 +141,8 @@ public:
 	keywordTrees();
 public:
 	static void staticInitializer();
-	static int getKeywordAdvancedID(std::string xKeywordtokenString);
-	static bool checkExistance(std::string xKeywordtokenString);
+	static int getKeywordAdvancedID(std::string xTokenKeywordenString);
+	static bool checkExistance(std::string xTokenKeywordenString);
 private:
 	static std::map <std::string, int> keywordMap;
 };

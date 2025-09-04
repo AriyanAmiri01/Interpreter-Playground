@@ -22,7 +22,7 @@ std::string Token::getTokenString()const
 
 ///////////////////////////////////////////////////////////////////
 ///Null TOKENS
-unknownTok::unknownTok(std::string xTokenString)
+TokenUnknown::TokenUnknown(std::string xTokenString)
 	:
 	Token(xTokenString)
 {
@@ -32,25 +32,25 @@ unknownTok::unknownTok(std::string xTokenString)
 
 ///////////////////////////////////////////////////////////////////
 /// STRUCTURAL TOKENS
-newLineTok::newLineTok(std::string xTokenString)
+TokenNewline::TokenNewline(std::string xTokenString)
 	:
 	Token(xTokenString)
 {
 	tokenID = TOKEN_NEWLINE;
 }
-indentTok::indentTok(std::string xTokenString)
+TokenIndent::TokenIndent(std::string xTokenString)
 	:
 	Token(xTokenString)
 {
 	tokenID = TOKEN_INDENT;
 }
-dedentTok::dedentTok(std::string xTokenString)
+TokenDedent::TokenDedent(std::string xTokenString)
 	:
 	Token(xTokenString)
 {
 	tokenID = TOKEN_DEDENT;
 }
-endOfFileTok::endOfFileTok(std::string xTokenString)
+TokenEOF::TokenEOF(std::string xTokenString)
 	:
 	Token(xTokenString)
 {
@@ -60,13 +60,13 @@ endOfFileTok::endOfFileTok(std::string xTokenString)
 
 //////////////////////////////////////////////////////////////////
 ///	ALPHABETICAL TOKENS
-identifierTok::identifierTok(std::string xTokenString)
+TokenIdentifier::TokenIdentifier(std::string xTokenString)
 	:
 	Token(xTokenString)
 {
 	tokenID = TOKEN_IDENTIFIER;
 }
-keywordTok::keywordTok(std::string xTokenString)
+TokenKeyword::TokenKeyword(std::string xTokenString)
 	:
 	Token(xTokenString)
 {
@@ -77,7 +77,7 @@ keywordTok::keywordTok(std::string xTokenString)
 
 //////////////////////////////////////////////////////////////////
 /// NUMERICAL TOKENS
-numericalTok::numericalTok(std::string xTokenString)
+TokenNumerical::TokenNumerical(std::string xTokenString)
 	:
 	Token(xTokenString)
 {
@@ -87,7 +87,7 @@ numericalTok::numericalTok(std::string xTokenString)
 
 //////////////////////////////////////////////////////////////////
 /// OPERATOR TOKENS
-operatorTok::operatorTok(std::string xTokenString)
+TokenOperator::TokenOperator(std::string xTokenString)
 	:
 	Token(xTokenString)
 {
@@ -177,7 +177,7 @@ operatorTok::operatorTok(std::string xTokenString)
 
 /////////////////////////////////////////////////////////////////
 /// DELIMITER TOKENS
-delimiterTok::delimiterTok(std::string xTokenString)
+TokenDelimiter::TokenDelimiter(std::string xTokenString)
 	:
 	Token(xTokenString)
 {
@@ -285,14 +285,14 @@ void keywordTrees::staticInitializer()
 		keywordMap.insert(std::make_pair("list", TOKEN_LIST));
 		keywordMap.insert(std::make_pair("append", TOKEN_APPE));
 }
-int keywordTrees::getKeywordAdvancedID(std::string xKeywordtokenString)
+int keywordTrees::getKeywordAdvancedID(std::string xTokenKeywordenString)
 {
-	auto i = keywordMap.find(xKeywordtokenString);
+	auto i = keywordMap.find(xTokenKeywordenString);
 	std::pair<std::string, int> keyPair = *i;
 	return keyPair.second;
 }
-bool keywordTrees::checkExistance(std::string xKeywordtokenString)
+bool keywordTrees::checkExistance(std::string xTokenKeywordenString)
 {
-	return keywordMap.contains(xKeywordtokenString);
+	return keywordMap.contains(xTokenKeywordenString);
 }
 

@@ -1,7 +1,7 @@
 // MyStatement.cpp
 #pragma once
 #include "MyStatement.h"
-
+#include "MySemanticAnalyzer.h"
 
 
 ///////////////////////////////////////////////////////////////////////
@@ -205,3 +205,53 @@ void while_stmt::testStmt()
 	std::cout << "</while>";
 }
 
+///////////////////////////////////////////////////////////////////////
+///	EXECUTE ACCEPT VISITOR FUNCTIONS
+void simple_stmt::accept(MySemanticAnalyzer& v)
+{
+	EXCEPT_INT("soemthing");
+}
+void assignment_stmt::accept(MySemanticAnalyzer& v)
+{
+	v.execute(*this);
+}
+void list_stmt::accept(MySemanticAnalyzer& v)
+{
+	v.execute(*this);
+}
+void append_stmt::accept(MySemanticAnalyzer& v)
+{
+	v.execute(*this);
+}
+void break_stmt::accept(MySemanticAnalyzer& v)
+{
+	v.execute(*this);
+}
+void continue_stmt::accept(MySemanticAnalyzer& v)
+{
+	v.execute(*this);
+}
+void print_stmt::accept(MySemanticAnalyzer& v)
+{
+	v.execute(*this);
+}
+void if_stmt::accept(MySemanticAnalyzer& v)
+{
+	v.execute(*this);
+}
+void compound_stmt::accept(MySemanticAnalyzer& v)
+{
+	EXCEPT_INT("something");
+}
+void else_stmt::accept(MySemanticAnalyzer& v)
+{
+	v.execute(*this);
+}
+void while_stmt::accept(MySemanticAnalyzer& v)
+{
+	v.execute(*this);
+}
+void block_stmt::accept(MySemanticAnalyzer& v)
+{
+	v.execute(*this);
+}

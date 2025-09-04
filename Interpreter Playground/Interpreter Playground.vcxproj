@@ -154,6 +154,7 @@
     <ClCompile Include="MyIdentifier.cpp" />
     <ClCompile Include="MyLexor.cpp" />
     <ClCompile Include="MyParser.cpp" />
+    <ClCompile Include="MySemanticAnalyzer.cpp" />
     <ClCompile Include="MyStatement.cpp" />
     <ClCompile Include="MyStatementFactory.cpp" />
     <ClCompile Include="Token.cpp" />
@@ -166,6 +167,7 @@
     <ClInclude Include="MyIdentifier.h" />
     <ClInclude Include="MyLexor.h" />
     <ClInclude Include="MyParser.h" />
+    <ClInclude Include="MySemanticAnalyzer.h" />
     <ClInclude Include="MyStatement.h" />
     <ClInclude Include="MyStatementFactory.h" />
     <ClInclude Include="Token.h" />
