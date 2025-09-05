@@ -1,16 +1,27 @@
 // Token.cpp
 #include "Token.h"
-
+#include <iostream>
 
 ///////////////////////////////////////////////////////////////////
 /// CONCRETE TOKEN
-Token::Token(std::string xTokenString)
+Token::Token(TOKENID xTokenID, std::string xTokenString,int xLine)
 	:
-	tokenString(xTokenString),
-	tokenID(0)
+	tokenID(xTokenID),
+	tokenString(xTokenString)
 {
+	// Checking if it is a token and if yes we get the exact tokenID instead of the general TOKEN_KEYWORD
+	if(tokenID == TOKEN_KEYWORD){
+		if(!keywordTrees::checkExistance(tokenString))
+		{
+			std::string errorString = "The corrisponding token does not exist in the language";
+			errorString.append(tokenString);
+			std::cout << tokenString;
+			EXCEPT_COD(xLine, "No info about the file", errorString);
+		}
+		tokenID = keywordTrees::getKeywordAdvancedID(xTokenString);
+	}
 }
-int Token::getTokenID()const
+TOKENID Token::getTokenID()const
 {
 	return tokenID;
 }
@@ -20,248 +31,10 @@ std::string Token::getTokenString()const
 }
 
 
-///////////////////////////////////////////////////////////////////
-///Null TOKENS
-TokenUnknown::TokenUnknown(std::string xTokenString)
-	:
-	Token(xTokenString)
-{
-	tokenID = TOKEN_NULL;
-}
-
-
-///////////////////////////////////////////////////////////////////
-/// STRUCTURAL TOKENS
-TokenNewline::TokenNewline(std::string xTokenString)
-	:
-	Token(xTokenString)
-{
-	tokenID = TOKEN_NEWLINE;
-}
-TokenIndent::TokenIndent(std::string xTokenString)
-	:
-	Token(xTokenString)
-{
-	tokenID = TOKEN_INDENT;
-}
-TokenDedent::TokenDedent(std::string xTokenString)
-	:
-	Token(xTokenString)
-{
-	tokenID = TOKEN_DEDENT;
-}
-TokenEOF::TokenEOF(std::string xTokenString)
-	:
-	Token(xTokenString)
-{
-	tokenID = TOKEN_EOF;
-}
-
-
-//////////////////////////////////////////////////////////////////
-///	ALPHABETICAL TOKENS
-TokenIdentifier::TokenIdentifier(std::string xTokenString)
-	:
-	Token(xTokenString)
-{
-	tokenID = TOKEN_IDENTIFIER;
-}
-TokenKeyword::TokenKeyword(std::string xTokenString)
-	:
-	Token(xTokenString)
-{
-	int tempTokenID = keywordTrees::getKeywordAdvancedID(xTokenString);
-	tokenID = tempTokenID;
-}
-
-
-//////////////////////////////////////////////////////////////////
-/// NUMERICAL TOKENS
-TokenNumerical::TokenNumerical(std::string xTokenString)
-	:
-	Token(xTokenString)
-{
-	tokenID = TOKEN_NUMBER;
-}
-
-
-//////////////////////////////////////////////////////////////////
-/// OPERATOR TOKENS
-TokenOperator::TokenOperator(std::string xTokenString)
-	:
-	Token(xTokenString)
-{
-	// Assigning the tokenID based on the tokenString
-	switch(xTokenString.at(0))
-	{
-	case('+'):
-		{
-			tokenID = TOKEN_PLUS;
-			break;
-		}
-	case('-'):
-		{
-			tokenID = TOKEN_MINUS;
-			break;
-		}
-	case('/'):
-		{
-			if(xTokenString.length() >= 2 && xTokenString.at(1) == '/'){
-
-				tokenID = TOKEN_FLOORDIVISION;
-
-			}
-			else{
-				tokenID = TOKEN_DEVISION;
-			}
-			break;
-		}
-	case('*'):
-		{
-			if(xTokenString.length() >= 2 && xTokenString.at(1) == '*'){
-				tokenID = TOKEN_EXPONENTIAL;
-			}
-			else{
-				tokenID = TOKEN_MULTIPLICATION;
-			}
-			break;
-		}
-	case('%'):
-		{
-			tokenID = TOKEN_MODULE;
-			break;
-		}
-	case('!'):
-		{
-			if(xTokenString.length() >= 2 && xTokenString.at(1) == '='){
-				tokenID = TOKEN_NCHECKEQUAL;
-			}
-			else{
-				tokenID = TOKEN_NOT;
-			}
-			break;
-		}
-	case('='):
-		{
-			if(xTokenString.length() >= 2 && xTokenString.at(1) == '='){
-				tokenID = TOKEN_CHECKEQUAL;
-			}
-			else{
-				tokenID = tokenID = TOKEN_EQUAL;;
-			}
-			break;
-		}
-	case('<'):
-		{
-			if(xTokenString.length() >= 2 && xTokenString.at(1) == '='){
-				tokenID = TOKEN_LOWEREQUAL;
-			}
-			else{
-				tokenID = TOKEN_LOWER;
-			}
-			break;
-		}
-	case('>'):
-		{
-			if(xTokenString.length() >= 2 && xTokenString.at(1) == '='){
-				tokenID = TOKEN_BIGGEREQUAL;
-			}
-			else{
-				tokenID = TOKEN_BIGGER;
-			}
-			break;
-		}
-	}
-}
-
-
-/////////////////////////////////////////////////////////////////
-/// DELIMITER TOKENS
-TokenDelimiter::TokenDelimiter(std::string xTokenString)
-	:
-	Token(xTokenString)
-{
-	// Checking the size of delimiter
-	if(xTokenString.size() > 1){EXCEPT_INT("Something");}
-
-	// Assigning the delimiter ID based on their string
-	switch(xTokenString.at(0))
-	{
-	case('('):
-		{
-			tokenID = TOKEN_OPENPARAN;
-			break;
-		}
-	case(')'):
-		{
-			tokenID = TOKEN_CLOSEPARAN;
-			break;
-		}
-	case('['):
-		{
-			tokenID = TOKEN_OPENBARAC;
-			break;
-		}
-	case(']'):
-		{
-			tokenID = TOKEN_CLOSEBARAC;
-			break;
-		}
-	case('{'):
-		{
-			tokenID = TOKEN_OPENCURBARAC;
-			break;
-		}
-	case('}'):
-		{
-			tokenID = TOKEN_CLOSECURBARAC;
-			break;
-		}
-	}
-}
-
-
-/////////////////////////////////////////////////////////////////
-/// PUNCTUATION TOKEN
-punctuationTok::punctuationTok(std::string xTokenString)
-	:
-	Token(xTokenString)
-{
-	// Assigning the tokenID based on the tokenString
-	if(xTokenString == std::string(1, ';')){
-		tokenID = TOKEN_SEMICOLON;
-	}
-	else if(xTokenString == std::string(1, ':')){
-		tokenID = TOKON_DOUBLECOLON;
-	}
-	else if(xTokenString == std::string(1, ',')){
-		tokenID = TOKEN_COMMA;
-	}
-	else if(xTokenString == std::string(1, '.')){
-		tokenID = TOKEN_DOT;
-	}
-}
-
-
-/////////////////////////////////////////////////////////////////
-/// STRING TOKENS
-stringTok::stringTok(std::string xTokenString)
-	:
-	Token(xTokenString)
-{
-	tokenID = TOKEN_STRING;
-}
-charTok::charTok(std::string xTokenstring)
-	:
-	Token(xTokenstring)
-{
-	tokenID = TOKEN_CHAR;
-}
-
 
 /////////////////////////////////////////////////////////////////
 /// KEYWORD STRUCTURES
-std::map<std::string, int> keywordTrees::keywordMap;
+std::map<std::string, TOKENID> keywordTrees::keywordMap;
 keywordTrees initObj;
 keywordTrees::keywordTrees()
 {
@@ -285,10 +58,10 @@ void keywordTrees::staticInitializer()
 		keywordMap.insert(std::make_pair("list", TOKEN_LIST));
 		keywordMap.insert(std::make_pair("append", TOKEN_APPE));
 }
-int keywordTrees::getKeywordAdvancedID(std::string xTokenKeywordenString)
+TOKENID keywordTrees::getKeywordAdvancedID(std::string xTokenKeywordenString)
 {
 	auto i = keywordMap.find(xTokenKeywordenString);
-	std::pair<std::string, int> keyPair = *i;
+	std::pair<std::string, TOKENID> keyPair = *i;
 	return keyPair.second;
 }
 bool keywordTrees::checkExistance(std::string xTokenKeywordenString)

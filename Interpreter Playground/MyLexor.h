@@ -21,5 +21,6 @@ private:
 	std::vector<Token> tokens;
 	std::stringstream oss;
 	std::string line;
+	int lineNum = 0;
 	std::stack<int> S;
 };
