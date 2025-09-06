@@ -26,6 +26,7 @@ protected:
 // Creating some macros for easier exception handling
 #define EXCEPT_INT(xWhat) throw (MyException(__LINE__, __FILE__, xWhat, "InterpretExcpetion"))
 #define EXCEPT_COD(xLine,xFile,xWhat) throw (MyException(xLine, xFile, xWhat, "SourceCodeException"))
+#define EXCEPT_COD_NOLINE(xWhat) throw (MyException(__LINE__, __FILE__, xWhat, "SourceCodeNoLineException"))
 #define EXCEPT_TOKEN(x) do { INFO_TOKEN(); throw MyException(__LINE__, __FILE__, x, "TokenException"); } while(0)
 
 

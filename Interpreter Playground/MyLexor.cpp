@@ -305,9 +305,13 @@ void  MyLexor::Tokenize(){
 
 ////////////////////////////////////////////////////////
 /// GETTERS
-std::vector<Token> MyLexor::GetTokens()
+std::vector<Token> MyLexor::GetTokens() noexcept
 {
-	return std::vector<Token>(tokens);
+	return tokens;
+}
+
+std::vector<Token>& MyLexor::GetTokensRef() noexcept{
+	return tokens;
 }
 
 

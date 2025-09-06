@@ -11,13 +11,11 @@
 class MyParser
 {
 public:
-	MyParser(int xTokenIndicator, std::vector<Token> xTokens);
+	MyParser(std::vector<Token>& xTokens);
 public:
 	void ASTCreator();
-	void testAST();
+	void TestAST();
 public:
 	std::vector<std::unique_ptr<stmt>> AST;
-	int tokenIndicator;
-	MyStatementFactory sf;
-	std::vector<Token> tokens;
+	std::vector<Token>& tokens;
 };

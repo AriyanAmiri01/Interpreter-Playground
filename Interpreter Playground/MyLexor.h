@@ -15,8 +15,9 @@ public:
 	MyLexor(std::string xFile);
 public:
 	void Tokenize();
-	std::vector<Token> GetTokens();
-	void TestTokens();	// Will be just for debugging
+	std::vector<Token> GetTokens() noexcept;
+	std::vector<Token>& GetTokensRef() noexcept;
+	void TestTokens();
 private:
 	std::vector<Token> tokens;
 	std::stringstream oss;

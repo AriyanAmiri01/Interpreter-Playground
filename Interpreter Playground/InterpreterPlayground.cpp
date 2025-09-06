@@ -22,9 +22,9 @@ int main(){
 		myLexor.TestTokens();
 
 		// Parsing the file
-		MyParser myParser(0, myLexor.GetTokens());
+		MyParser myParser(myLexor.GetTokensRef());
 		myParser.ASTCreator();
-		myParser.testAST();
+		myParser.TestAST();
 
 		// Anylizing the AST
 		MySemanticAnalyzer mySemanticalAnalyzer(std::move(myParser.AST));

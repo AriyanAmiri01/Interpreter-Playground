@@ -4,11 +4,9 @@
 
 ///////////////////////////////////////////////////////////////////////
 /// SYNTATICAL ANALYSER STUFFS
-MyParser::MyParser(int xTokenIndicator, std::vector<Token> xTokens)
+MyParser::MyParser(std::vector<Token>& xTokens)
 	:
-	tokenIndicator(xTokenIndicator),
-	tokens(xTokens),
-	sf(xTokenIndicator, xTokens)
+	tokens(xTokens)
 {
 	// Just initializing stuffs
 	if(tokens.empty()){
@@ -18,16 +16,19 @@ MyParser::MyParser(int xTokenIndicator, std::vector<Token> xTokens)
 
 
 ///////////////////////////////////////////////////////////////////////
-/// ABSTRACT SYNTAX TREE STUFFS
+/// ABSTRACT SYNTAX TREE STUFFS 
 void MyParser::ASTCreator()
 {
+	// The class used for parsing the statements
+	MyStatementFactory sf(tokens);
+
 	// Looping through all the tokens and parisng until EOF
 	while(sf.peek().getTokenID() != TOKEN_EOF){
-		AST.push_back(std::move(sf.findStatement()));
+		AST.push_back(std::move(sf.FindStatement()));
 	}
 }
 
-void MyParser::testAST()
+void MyParser::TestAST()
 {
 	std::cout
 		<< std::endl
