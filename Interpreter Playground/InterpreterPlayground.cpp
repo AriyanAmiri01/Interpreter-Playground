@@ -19,10 +19,10 @@ int main(){
 		// Lexing the file
 		MyLexor myLexor(myFileOpener.getFile());
 		myLexor.Tokenize();
-		myLexor.testTokens();
+		myLexor.TestTokens();
 
 		// Parsing the file
-		MyParser myParser(0, myLexor.getTokens());
+		MyParser myParser(0, myLexor.GetTokens());
 		myParser.ASTCreator();
 		myParser.testAST();
 

@@ -1,6 +1,6 @@
-#include "MyLexor.h"
 // MyLexor.cpp
 #include "MyLexor.h"
+
 
 
 ////////////////////////////////////////////////////////
@@ -9,10 +9,14 @@ MyLexor::MyLexor(std::string xFile)
 {
 	// Getting the file string and initializing the indentStack
 	oss << xFile;
-	S.push(0);
+
 }
 
 void  MyLexor::Tokenize(){
+	// Creating the stach for the indentations
+	std::stack<int> S;
+	S.push(0);
+
 	// Just extra cheking of the stack just for the debug version
 	#ifndef NDEBUG
 	if(S.empty()){
@@ -21,123 +25,113 @@ void  MyLexor::Tokenize(){
 	#endif
 
 	// Looping through each line
+	std::string line;
+	int lineNum = 0;
 	while(std::getline(oss, line)){
 		// Extracting Indentation
 		int lineSize = static_cast<int>(line.size());
+		lineNum++;
 
 		// Ignoring empty lines
 		if(line.empty()) {
 			continue;
 		}
 
-		// Looping through each character until we see a char and add indent
-		int i = 0;
-		bool continueTrigger = false;
-		for(i; i < lineSize; i++) {
-			// checking the character
-			if(!std::isspace(line.at(i))) {
-				break;
-			}
-			// a new empty line so we exit out of loop a gen dedent
-			if(i + 1 >= lineSize){
-				continueTrigger = true;
-			}
+		// Skip completely empty or whitespace-only lines
+		auto firstNonSpace = line.find_first_not_of(" \t");
+		if(firstNonSpace == std::string::npos) {
+			continue; // no token for blank lines
 		}
-		if(continueTrigger){ continue; }
 
+		// Indentation count = index of first non-space
+		int i = static_cast<int>(firstNonSpace);
 
-		// Comparing this line indentation with the prev stack indentation
+		// Indent and dedent tokenization <TOKEN_INDENT> or <TOKEN_DEDENT>
 		if(i > S.top()){
 			S.push(i);
-			Token t(TOKEN_INDENT,"Indent", lineNum);
-			tokens.push_back(t);
-		}
-		else if(i < S.top()){
+			tokens.push_back(Token(TOKEN_INDENT, "Indent", lineNum));
+		}else if(i < S.top()){
 			while(!S.empty() && i < S.top()){
 				S.pop();
 				Token t(TOKEN_DEDENT, "Dedent", lineNum);
 				tokens.push_back(t);
 			}
+			#ifndef NDEBUG
 			if(S.empty() || i != S.top()) {
-				std::cout << "i:" << i << "top:" << S.top();
-				EXCEPT_INT("Something");
-			}
+				EXCEPT_INT("An error occured while trying to pop out an empty stack in the lexor");
+			}	
+			#endif
 		}
 
-		// WE ARE FIXED WITH INDENTATION :: time to tokenize
+		// Finished with dedent and indent
 		while(i < lineSize){
-			// If It is a space
+			// Ignoring the white space between tokens
 			if(i < lineSize && std::isspace(line.at(i))){
 				i++;
 			}
-			//Start with alpha
-			if(i < lineSize && std::isalpha(line.at(i))){
 
-				std::string tempToken;
-				tempToken += line.at(i);
+			// Start with alpha => <TOKEN_KEYWORD> or <TOKEN_IDENTIFIER>
+			if(i < lineSize && std::isalpha(line.at(i))){
+				std::string tempStr;
+				tempStr += line.at(i);
 				i++;
 				while(i < lineSize && (std::isalnum(line.at(i)) || (line.at(i) == '_'))) {
-					tempToken += line.at(i);
+					tempStr += line.at(i);
 					i++;
-
 				}
-				if(keywordTrees::checkExistance(tempToken)){
-					Token t(TOKEN_KEYWORD, tempToken, lineNum);
-					tokens.push_back(t);
-				}
-				else{
-					Token tempIdentifier(TOKEN_IDENTIFIER, tempToken, lineNum);
-					tokens.push_back(tempIdentifier);
+				if(keywordTrees::checkExistance(tempStr)){
+					tokens.push_back(Token(TOKEN_KEYWORD, tempStr, lineNum));
+				}else{
+					tokens.push_back(Token(TOKEN_IDENTIFIER, tempStr, lineNum));
 				}
 			}
 
-			// Start with a number
+			// Start with a number => <TOKEN_NUMBER>
 			if(i < lineSize && std::isdigit(line.at(i))){
-
-				std::string tempToken;
-				tempToken += line.at(i);
+				std::string tempStr;
+				tempStr += line.at(i);
 				i++;
 				while(i < lineSize && std::isdigit(line.at(i))){
-					tempToken += line.at(i);
+					tempStr += line.at(i);
 					i++;
-
 				}
-				Token tempNumTok(TOKEN_NUMBER,tempToken, lineNum);
-				tokens.push_back(tempNumTok);
-
+				tokens.push_back(Token(TOKEN_NUMBER, tempStr, lineNum));
 				if(i < lineSize && std::isalpha(line.at(i))) {
-					EXCEPT_INT("An alphabetical symbol immediately after a numerical token is not allowed");
+					EXCEPT_COD(lineNum, "No info", "An alphabetical symbol immediately after a numerical token is not allowed");
 				}
 			}
 
-			// Finding string liters
+			// starts with a char => <TOKEN_STRING> or <TOKEN_CHAR>
 			if(i < lineSize && (line.at(i) == '"')){
-				std::string tempToken;
+				std::string tempStr;
 				i++;
 				while(i < lineSize && line.at(i) != '"'){
-
-					tempToken += line.at(i);
+					tempStr += line.at(i);
 					i++;
 				}
 				if(i >= lineSize && line.at(i) != '"'){
-					EXCEPT_INT("There is second quotation mark for the string");
+					EXCEPT_COD(lineNum, "No info", "There is second quotation mark for the string");
 				}
-				Token t(TOKEN_STRING, tempToken, lineNum);
-				tokens.push_back(t);
+				tokens.push_back(Token(TOKEN_STRING, tempStr, lineNum));
 			}
 
 			// Finding the character literals
 			if(i < lineSize && line.at(i) == '\'') {
 				i++;
-				if(i >= lineSize)
+				#ifndef  NDEBUG
+				if(i >= lineSize){
 					EXCEPT_INT("Unexpected end of line after opening single quote");
+				}
+				#endif 
 				char c = line.at(i);
 				i++;
-				if(i >= lineSize || line.at(i) != '\'')
+				#ifndef  NDEBUG
+				if(i >= lineSize || line.at(i) != '\''){
 					EXCEPT_INT("Missing closing single quote for character literal");
+				}
+				#endif 
 				i++;
-				Token t(TOKEN_STRING, std::string(1, c), lineNum);
-				tokens.push_back(t);
+				tokens.push_back(Token(TOKEN_STRING, std::string(1, c), lineNum));
 			}
 
 			// Start with an delimiter
@@ -146,57 +140,49 @@ void  MyLexor::Tokenize(){
 				{
 				case(':'):
 					{
-						Token Tok(TOKON_DOUBLECOLON,std::string(1, ':'), lineNum);
-						tokens.push_back(Tok);
+						tokens.push_back(Token(TOKON_DOUBLECOLON, std::string(1, ':'), lineNum));
 						i++;
 						break;
 					}
 				case(';'):
 					{
-						Token Tok(TOKEN_SEMICOLON,std::string(1, ';'), lineNum);
-						tokens.push_back(Tok);
+						tokens.push_back(Token(TOKEN_SEMICOLON, std::string(1, ';'), lineNum));
 						i++;
 						break;
 					}
 				case(','):
 					{
-						Token Tok(TOKEN_COMMA,std::string(1, ','), lineNum);
-						tokens.push_back(Tok);
+						tokens.push_back(Token(TOKEN_COMMA, std::string(1, ','), lineNum));
 						i++;
 						break;
 					}
 				case('.'):
 					{
-						Token Tok(TOKEN_DOT, std::string(1, '.'), lineNum);
-						tokens.push_back(Tok);
+						tokens.push_back(Token(TOKEN_DOT, std::string(1, '.'), lineNum));
 						i++;
 						break;
 					}
 				case('('):
 					{
-						Token Tok(TOKEN_OPENPARAN, std::string(1, '('), lineNum);
-						tokens.push_back(Tok);
+						tokens.push_back(Token(TOKEN_OPENPARAN, std::string(1, '('), lineNum));
 						i++;
 						break;
 					}
 				case(')'):
 					{
-						Token Tok(TOKEN_CLOSEPARAN, std::string(1, ')'), lineNum);
-						tokens.push_back(Tok);
+						tokens.push_back(Token(TOKEN_CLOSEPARAN, std::string(1, ')'), lineNum));
 						i++;
 						break;
 					}
 				case('{'):
 					{
-						Token Tok(TOKEN_OPENBARAC ,std::string(1, '{'), lineNum);
-						tokens.push_back(Tok);
+						tokens.push_back(Token(TOKEN_OPENBARAC, std::string(1, '{'), lineNum));
 						i++;
 						break;
 					}
 				case('}'):
 					{
-						Token Tok(TOKEN_CLOSEBARAC, std::string(1, '}'), lineNum);
-						tokens.push_back(Tok);
+						tokens.push_back(Token(TOKEN_CLOSEBARAC, std::string(1, '}'), lineNum));
 						i++;
 						break;
 					}
@@ -204,15 +190,11 @@ void  MyLexor::Tokenize(){
 					{
 						i++;
 						if(i < lineSize && line.at(i) == '<'){
-
-							Token t(TOKEN_LOWEREQUAL,std::string(1, '='), lineNum);
-							tokens.push_back(t);
+							tokens.push_back(Token(TOKEN_LOWEREQUAL, std::string(1, '='), lineNum));
 							i++;
 
-						}
-						else{
-							Token t(TOKEN_LOWER, std::string(1, '<'), lineNum);
-							tokens.push_back(t);
+						}else{
+							tokens.push_back(Token(TOKEN_LOWER, std::string(1, '<'), lineNum));
 						}
 						break;
 					}
@@ -220,13 +202,10 @@ void  MyLexor::Tokenize(){
 					{
 						i++;
 						if(i < lineSize && line.at(i) == '>'){
-							Token t(TOKEN_BIGGEREQUAL,std::string(1, '='), lineNum);
-							tokens.push_back(t);
+							tokens.push_back(Token(TOKEN_BIGGEREQUAL, std::string(1, '='), lineNum));
 							i++;
-						}
-						else{
-							Token t( TOKEN_BIGGER,std::string(1, '>'), lineNum);
-							tokens.push_back(t);
+						}else{
+							tokens.push_back(Token(TOKEN_BIGGER, std::string(1, '>'), lineNum));
 						}
 						break;
 					}
@@ -234,34 +213,28 @@ void  MyLexor::Tokenize(){
 					{
 						i++;
 						if(i < lineSize && line.at(i) == '='){
-							Token t(TOKEN_CHECKEQUAL,"==", lineNum);
-							tokens.push_back(t);
+							tokens.push_back(Token (TOKEN_CHECKEQUAL, "==", lineNum));
 							i++;
-						}
-						else{
-							Token t(TOKEN_EQUAL ,std::string(1, '='), lineNum);
-							tokens.push_back(t);
+						}else{
+							tokens.push_back(Token(TOKEN_EQUAL, std::string(1, '='), lineNum));
 						}
 						break;
 					}
 				case('%'):
 					{
-						Token Tok(TOKEN_MODULE,std::string(1, '%'), lineNum);
-						tokens.push_back(Tok);
+						tokens.push_back(Token(TOKEN_MODULE, std::string(1, '%'), lineNum));
 						i++;
 						break;
 					}
 				case('+'):
 					{
-						Token Tok(TOKEN_PLUS, std::string(1, '+'), lineNum);
-						tokens.push_back(Tok);
+						tokens.push_back(Token(TOKEN_PLUS, std::string(1, '+'), lineNum));
 						i++;
 						break;
 					}
 				case('-'):
 					{
-						Token Tok(TOKEN_MINUS, std::string(1, '-'), lineNum);
-						tokens.push_back(Tok);
+						tokens.push_back(Token(TOKEN_MINUS, std::string(1, '-'), lineNum));
 						i++;
 						break;
 					}
@@ -269,28 +242,23 @@ void  MyLexor::Tokenize(){
 					{
 						i++;
 						if(i < lineSize && line.at(i) == '*'){
-							Token t(TOKEN_EXPONENTIAL, "**", lineNum);
-							tokens.push_back(t);
+
+							tokens.push_back(Token(TOKEN_EXPONENTIAL, "**", lineNum));
 							i++;
-						}
-						else{
-							Token Tok(TOKEN_MULTIPLICATION,std::string(1, '*'), lineNum);
-							tokens.push_back(Tok);
+						}else{
+							
+							tokens.push_back(Token(TOKEN_MULTIPLICATION, std::string(1, '*'), lineNum));
 						}
 						break;
 					}
-					
 				case('/'):
 					{
 						i++;
 						if(i < lineSize && line.at(i) == '/'){
-							Token t(TOKEN_FLOORDIVISION,"//", lineNum);
-							tokens.push_back(t);
+							tokens.push_back(Token(TOKEN_FLOORDIVISION, "//", lineNum));
 							i++;
-						}
-						else{
-							Token Tok(TOKEN_DEVISION, std::string(1, '/'), lineNum);
-							tokens.push_back(Tok);
+						}else{
+							tokens.push_back(Token(TOKEN_DEVISION, std::string(1, '/'), lineNum));
 						}
 						break;
 					}
@@ -298,13 +266,10 @@ void  MyLexor::Tokenize(){
 					{
 						i++;
 						if(line.at(i) == '='){
-							Token t(TOKEN_NCHECKEQUAL ,"!=", lineNum);
-							tokens.push_back(t);
+							tokens.push_back(Token(TOKEN_NCHECKEQUAL, "!=", lineNum));
 							i++;
-						}
-						else{
-							Token Tok(TOKEN_NOT, std::string(1, '!'), lineNum);
-							tokens.push_back(Tok);
+						}else{
+							tokens.push_back(Token(TOKEN_NOT, std::string(1, '!'), lineNum));
 						}
 						break;
 					}
@@ -316,29 +281,31 @@ void  MyLexor::Tokenize(){
 					}
 				default:
 					{
-						EXCEPT_INT("The python code contains a symbol that is not defined in the grammer");
+						EXCEPT_COD(lineNum, "No Info" , "The python code contains a symbol that is not defined in the grammer");
 						i++;
 						break;
 					}
 				}
 			}
+			// Ending the line
 		}
-
-		Token t(TOKEN_NEWLINE, "NewLine", lineNum);
-		tokens.push_back(t);
+		tokens.push_back(Token(TOKEN_NEWLINE, "NewLine", lineNum));
 	}
+
+	// Generating tokens before the end of file ==> <TOKEN_DEDENT>
 	while(S.size() > 1) { // We assume base indentation is 0 at bottom of stack
 		S.pop();
 		tokens.push_back(Token(TOKEN_DEDENT, "Dedent", lineNum));
 	}
-	Token t(TOKEN_EOF, "EndOfFileMarker", lineNum);
-	tokens.push_back(t);
+	
+	// End of the file ==> <TOKEN_EOF>
+	tokens.push_back(Token(TOKEN_EOF, "EndOfFileMarker", lineNum));
 }
 
 
 ////////////////////////////////////////////////////////
 /// GETTERS
-std::vector<Token> MyLexor::getTokens()
+std::vector<Token> MyLexor::GetTokens()
 {
 	return std::vector<Token>(tokens);
 }
@@ -346,12 +313,12 @@ std::vector<Token> MyLexor::getTokens()
 
 ////////////////////////////////////////////////////////
 /// TEST STUFFS
-void MyLexor::testTokens()
+void MyLexor::TestTokens()
 {
 	// Defining a basic function for seeing the result of the lexor
 	std::cout
 		<< std::endl
-		<< "___________________________________"
+		<< "___________________________________" << std::endl
 		<< "The result of the testTokens:" << std::endl;
 	int i = 0;
 	for(auto t : tokens){
